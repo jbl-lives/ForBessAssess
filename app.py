@@ -69,8 +69,8 @@ def insert_inverter():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/get_inverter', methods=['GET', 'POST'])
-def get_inverter():
+@app.route('/get_machine', methods=['GET', 'POST'])
+def get_machine():
     try:
         if request.method == 'GET':
             q_code = request.args.get('QrCode')
@@ -78,22 +78,36 @@ def get_inverter():
             q_code = request.form.get('QrCode')
         else:
             return 'Method not allowed', 405
-
-        sql = "SELECT * FROM inverters\
-              INNER JOIN locations\
-              ON locations.location_id = inverters.inverter_id\
-              WHERE qr_code = %s;"
+        # q_code = "QR78902909"
+        sql = "SELECT qr_code, inverter_manufacturer, inverter_capacity, serial_number, \
+                      installation_date, battery_manufacturer, battery_type, battery_capacity, \
+                      num_of_batteries, battery_serial, tenant_name, premise_address, \
+                      contact_person, contact_number, inspection_date, inspector_name \
+               FROM inverters\
+               INNER JOIN locations\
+               ON locations.location_id = inverters.inverter_id\
+               WHERE qr_code = %s;"
 
         mycursor.execute(sql, (q_code,))
-        game_data = mycursor.fetchone()
+        result = mycursor.fetchone()
 
-        if game_data:
-            # Join the values with a separator (you can choose a separator based on your needs)
-            return (f"{game_data[1]}|{game_data[2]}|{game_data[3]}|{game_data[4]}|{game_data[5]}|{game_data[6]}"
-                    f"|{game_data[7]}|{game_data[8]}|{game_data[9]}|{game_data[10]}|{game_data[11]}"
-                    f"|{game_data[12]}|{game_data[13]}|{game_data[14]}|{game_data[15]}|{game_data[16]}"
-                    f"|{game_data[17]}"), 200
+        if result:
+            # Use variables directly
+            qr_code, inverter_manufacturer, inverter_capacity, serial_number, \
+                installation_date, battery_manufacturer, battery_type, battery_capacity, \
+                num_of_batteries, battery_serial,  tenant_name, premise_address, \
+                contact_person, contact_number, inspection_date, inspector_name = result
+
+            return (
+                f"{qr_code}|{inverter_manufacturer}|{inverter_capacity}|{serial_number}|"
+                f"{installation_date}|{battery_manufacturer}|{battery_type}|{battery_capacity}|"
+                f"{num_of_batteries}|{battery_serial}|{tenant_name}|"
+                f"{premise_address}|{contact_person}|{contact_number}|"
+                f"{inspection_date}|{inspector_name}"
+            ), 200
         else:
             return 'Game not found', 404
     except Exception as e:
         return str(e), 500
+
+
