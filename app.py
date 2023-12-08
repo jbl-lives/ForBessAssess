@@ -38,8 +38,6 @@ def insert_location():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-
 @app.route('/insert_inverter', methods=['POST'])
 def insert_inverter():
     try:
@@ -64,7 +62,7 @@ def insert_inverter():
                )
 
         mycursor.execute(sql, val)
-        db.commit()
+        conn.commit()
         return jsonify({'message': 'inverter inserted successfully'}), 201
 
     except Exception as e:
