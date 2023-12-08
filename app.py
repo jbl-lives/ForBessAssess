@@ -70,7 +70,7 @@ def insert_inverter():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/get_inverter', methods=['GET', 'POST'])
+@app.route('/get_machine', methods=['GET', 'POST'])
 def get_machine():
     try:
         if request.method == 'GET':
