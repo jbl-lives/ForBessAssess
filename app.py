@@ -38,6 +38,36 @@ def insert_location():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/insert_inverter', methods=['POST'])
+def insert_inverter():
+    try:
+        qr_code = request.form.get('qrCode')
+        inverter_manufacturer = request.form.get('inverterManufacture')
+        inverter_capacity = int(request.form.get('inverterCapacity'))
+        serial_number = request.form.get('inverterSerial')
+        installation_date = request.form.get('installationDate')
+
+        battery_manufacturer = request.form.get('batteryManufacture')
+        battery_type = request.form.get('batteryType')
+        battery_serial = request.form.get('batterySerial')
+        battery_capacity = int(request.form.get('batteryCapacity'))
+        num_of_batteries = int(request.form.get('numOfBatteries'))
+
+        sql = ("INSERT INTO inverters (qr_code, inverter_manufacturer, inverter_capacity, serial_number, "
+               "installation_date, battery_manufacturer, battery_type, battery_capacity, num_of_batteries,"
+               " battery_serial) "
+               "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+        val = (qr_code, inverter_manufacturer, inverter_capacity, serial_number, installation_date,
+               battery_manufacturer, battery_type, battery_capacity, num_of_batteries, battery_serial
+               )
+
+        mycursor.execute(sql, val)
+        conn.commit()
+        return jsonify({'message': 'inverter inserted successfully'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/get_inverter', methods=['GET', 'POST'])
 def get_inverter():
